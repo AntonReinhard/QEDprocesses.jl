@@ -2,6 +2,7 @@ module QEDprocesses
 
 export AbstractParticle
 export is_fermion, is_boson, is_particle, is_anti_particle
+export base_state
 export mass, charge
 
 # Abstract model interface
@@ -22,6 +23,7 @@ export AbstractParticleType
 export FermionLike, Fermion, AntiFermion, MajoranaFermion
 export BosonLike, Boson, AntiBoson, MajoranaBoson
 export Electron, Positron, Photon
+export ParticleDirection, Incoming, Outgoing
 
 using DocStringExtensions
 using QEDbase

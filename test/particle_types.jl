@@ -1,4 +1,16 @@
 using QEDprocesses
+using QEDbase
+using Random
+
+FERMION_STATES_GROUNDTRUTH_FACTORY = Dict(
+    (Incoming, Electron) => IncomingFermionSpinor,
+    (Outgoing, Electron) => OutgoingFermionSpinor,
+    (Incoming, Positron) => IncomingAntiFermionSpinor,
+    (Outgoing, Positron) => OutgoingAntiFermionSpinor
+)
+
+rng = MersenneTwister(708583836976)
+x, y, z = rand(rng, 3)
 
 @testset "fermion likes" begin
     @testset "fermion" begin
@@ -6,6 +18,18 @@ using QEDprocesses
         @test is_fermion(TestFermion())
         @test is_particle(TestFermion())
         @test !is_anti_particle(TestFermion())
+
+
+        mom = SFourMomentum(sqrt(x^2 + y^2 + z^2 + mass(Electron())^2), x, y, z)
+        @testset "$P $D" for (P, D) in Iterators.product((Electron, Positron), (Incoming, Outgoing))
+
+            particle_mass = mass(P())
+            groundtruth_states = FERMION_STATES_GROUNDTRUTH_FACTORY[(D, P)](mom, particle_mass)
+            groundtruth_tuple = Vector(groundtruth_states(1), groundtruth_states(2))
+            @test base_state(P(), D(), mom) == groundtruth_tuple
+            @test base_state(P(), D(), mom, SpinUp()) == groundtruth_tuple[1]
+            @test base_state(P(), D(), mom, SpinDown()) == groundtruth_tuple[2]
+        end
     end
 
     @testset "antifermion" begin
@@ -71,5 +95,24 @@ end
         @test is_anti_particle(Photon())
         @test charge(Photon()) == 0.0
         @test mass(Photon()) == 0.0
+
+
+        mom = SFourMomentum(sqrt(x^2 + y^2 + z^2 + mass(Photon())^2), x, y, z)
+        @testset "$D" for D in [Incoming, Outgoing]
+            both_photon_states = base_state(Photon(), D(), mom)
+
+            # property test the photon states
+            @test isapprox((both_photon_states[1] * mom), 0.0, atol=ATOL)
+            @test isapprox((both_photon_states[2] * mom), 0.0, atol=ATOL)
+            @test isapprox((both_photon_states[1] * both_photon_states[1]), -1.0)
+            @test isapprox((both_photon_states[2] * both_photon_states[2]), -1.0)
+            @test isapprox((both_photon_states[1] * both_photon_states[2]), 0.0, atol=ATOL)
+
+            # test the single polarization states
+            @test base_state(Photon(), D(), mom, PolarizationX()) == both_photon_states[1]
+            @test base_state(Photon(), D(), mom, PolarizationY()) == both_photon_states[2]
+            @test base_state(Photon(), D(), mom, PolX()) == both_photon_states[1]
+            @test base_state(Photon(), D(), mom, PolY()) == both_photon_states[2]
+        end
     end
 end
