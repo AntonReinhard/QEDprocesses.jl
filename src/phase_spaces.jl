@@ -178,16 +178,16 @@ struct PhaseSpacePoint{
     PROC<:AbstractProcessDefinition,
     MODEL<:AbstractModelDefinition,
     PSDEF<:AbstractPhasespaceDefinition,
-    PhaseSpaceElementType<:AbstractFourMomentum,
-    N_IN_PARTICLES,
-    N_OUT_PARTICLES,
+    PHASE_SPACE_ELEMENT_T<:AbstractFourMomentum,
+    IN_PARTICLES<:Tuple,
+    OUT_PARTICLES<:Tuple,
 }
     proc::PROC
     model::MODEL
     ps_def::PSDEF
 
-    in_particles::SVector{N_IN_PARTICLES,ParticleStateful{PhaseSpaceElementType}}
-    out_particles::SVector{N_OUT_PARTICLES,ParticleStateful{PhaseSpaceElementType}}
+    in_particles::IN_PARTICLES
+    out_particles::OUT_PARTICLES
 
     function PhaseSpacePoint(
         proc::PROC, model::MODEL, ps_def::PSDEF, in_p::IN_P, out_p::OUT_P
@@ -196,8 +196,8 @@ struct PhaseSpacePoint{
         MODEL<:AbstractModelDefinition,
         PSDEF<:AbstractPhasespaceDefinition,
         PhaseSpaceElementType<:AbstractFourMomentum,
-        IN_P<:AbstractVector{ParticleStateful{PhaseSpaceElementType}},
-        OUT_P<:AbstractVector{ParticleStateful{PhaseSpaceElementType}},
+        IN_P<:Tuple,
+        OUT_P<:Tuple,
     }
         length(incoming_particles(proc)) == length(in_p) || throw(
             InvalidInputError(
@@ -235,7 +235,7 @@ struct PhaseSpacePoint{
             )
         end
 
-        return new{PROC,MODEL,PSDEF,PhaseSpaceElementType,length(in_p),length(out_p)}(
+        return new{PROC,MODEL,PSDEF,PHASE_SPACE_ELEMENT_T,length(in_p),length(out_p)}(
             proc, model, ps_def, in_p, out_p
         )
     end
