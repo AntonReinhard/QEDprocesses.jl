@@ -16,6 +16,7 @@ using QEDbase
 using QEDcore
 using StaticArrays
 using QuadGK
+using DoubleFloats
 
 include("utils.jl")
 

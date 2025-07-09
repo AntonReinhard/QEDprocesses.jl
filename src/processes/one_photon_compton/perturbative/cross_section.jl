@@ -45,7 +45,7 @@ end
 end
 
 @inline function QEDbase._phase_space_factor(
-        psp::PhaseSpacePoint{<:Compton, PerturbativeQED}
+        psp::PhaseSpacePoint{<:Compton, PerturbativeQED, <:ComptonSphericalLayout}
     )
     in_ps = momenta(psp, Incoming())
     out_ps = momenta(psp, Outgoing())

@@ -30,14 +30,6 @@ ComptonRestSystem() = ComptonRestSystem(Energy(2))
 # outgoing phase space layout
 # spherical coordinates in electron rest frame
 
-@inline function _pert_Compton_omega_prime(pt, cth)
-    Et = getE(pt)
-    rho2_t = getMag2(pt)
-    s = Et^2 - rho2_t
-
-    return (s - 1) / (2 * (Et - sqrt(rho2_t) * cth))
-end
-
 struct ComptonSphericalLayout{INPSL <: AbstractTwoBodyInPhaseSpaceLayout} <:
     AbstractOutPhaseSpaceLayout{INPSL}
     in_psl::INPSL
@@ -69,15 +61,24 @@ function QEDbase._build_momenta(
     ) where {T <: Real}
     P, K = QEDbase._build_momenta(proc, model, in_phase_space_layout(psl), in_coords)
     Pt = P + K
+
     cth, phi = @inbounds out_coords
-    omega_prime = _pert_Compton_omega_prime(Pt, cth)
-    sth = sqrt(1 - cth^2)
+    sth = QEDcore.sq_diff_sqrt(one(cth), cth)
     sphi, cphi = sincos(phi)
 
-    Kp = SFourMomentum{T}(
-        omega_prime, omega_prime * sth * cphi, omega_prime * sth * sphi, omega_prime * cth
-    )
-    Pp = Pt - Kp
+    e = getE(Pt)
+    rho_t = getMag(Pt)
+    s = QEDcore.sq_diff(getE(Pt), rho_t) - 1
 
-    return (P, K), (Pp, Kp)
+    x = DoubleFloat(getX(Pt))
+    y = DoubleFloat(getY(Pt))
+    z = DoubleFloat(getZ(Pt))
+    double_t = hypot(x, y, z) * cth
+    double_omega_prime = s / (2 * (e - double_t))
+
+    Kp = double_omega_prime * SFourMomentum{T}(
+        one(T), sth * cphi, sth * sphi, cth
+    )
+    Pp = SFourMomentum{T}(Pt - Kp)
+    return (P, K), (Pp, SFourMomentum{T}(Kp))
 end

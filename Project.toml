@@ -4,6 +4,7 @@ authors = ["Uwe Hernandez Acosta <u.hernandez@hzdr.de>", "Simeon Ehrig", "Klaus 
 version = "0.4.0"
 
 [deps]
+DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
 Memoization = "6fafb56a-5788-4b4e-91ca-c0cea6611c73"
 QEDFeynmanDiagrams = "3232ad24-8ec1-4588-843e-e2ed2eae1ff3"
 QEDbase = "10e22c08-3ccb-4172-bfcf-7d7aa3d04d93"
@@ -14,6 +15,7 @@ RuntimeGeneratedFunctions = "7e49a35a-f44a-4d26-94aa-eba1b4ca6b47"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 
 [compat]
+DoubleFloats = "1.4.3"
 Memoization = "0.2.2"
 QEDFeynmanDiagrams = "0.1.0"
 QEDbase = "0.4.0"
