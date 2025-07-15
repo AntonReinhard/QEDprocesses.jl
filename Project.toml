@@ -6,6 +6,7 @@ version = "0.4.0"
 [deps]
 DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
 Memoization = "6fafb56a-5788-4b4e-91ca-c0cea6611c73"
+PrecisionCarriers = "5b00bbae-6f32-4368-a198-a7942af0a543"
 QEDFeynmanDiagrams = "3232ad24-8ec1-4588-843e-e2ed2eae1ff3"
 QEDbase = "10e22c08-3ccb-4172-bfcf-7d7aa3d04d93"
 QEDcore = "35dc0263-cb5f-4c33-a114-1d7f54ab753e"
