@@ -27,9 +27,13 @@ end
         PROC <: ScatteringProcess, PSP <: PhaseSpacePoint{PROC, PerturbativeQED},
     }
     g = graph(proc)
-    # TODO: there seems to be a bug in 1.12 with ComputableDAGs.jl. Enable this again once it's fixed
-    #optimize_to_fixpoint!(ReductionOptimizer(), g)
-    return get_compute_function(g, proc, cpu_st(), @__MODULE__; closures_size = 1000, concrete_input_type = PSP)
+    @info "built graph"
+    @info g
+    @info "continuing"
+    flush(stdout)
+    f = get_compute_function(g, proc, cpu_st(), @__MODULE__; closures_size = 0, concrete_input_type = PSP)
+    @info "built function"
+    return f
 end
 
 function QEDbase._matrix_element(psp::PhaseSpacePoint{PROC, PerturbativeQED}) where {PROC <: ScatteringProcess}
